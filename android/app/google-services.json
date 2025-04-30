@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "68241899379",
+    "project_id": "muklog",
+    "storage_bucket": "muklog.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68241899379:android:e1ed788e8fb10354c78f06",
+        "android_client_info": {
+          "package_name": "com.jylee.muklog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68241899379-4mhnd4bjt75m7upcc4f88uf08pqu9dnb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jylee.muklog",
+            "certificate_hash": "f6e03d2cd56bd7fafe69e988fa089ec07d812255"
+          }
+        },
+        {
+          "client_id": "68241899379-uleh0qhmo7p902kpssau1uimd9k5dt7a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jylee.muklog",
+            "certificate_hash": "16bda9064a8652a97a596c46bf06e6a124b72fb2"
+          }
+        },
+        {
+          "client_id": "68241899379-31ma7fhvmgu4gpirqvk4lgim401lrp6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT6XMgOLvu_P8R8zFfjgUGS26XSqknSsw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68241899379-31ma7fhvmgu4gpirqvk4lgim401lrp6g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "68241899379-9ed96916u13ct0e491i3o5is7mqms7ua.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jylee.muklog"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
