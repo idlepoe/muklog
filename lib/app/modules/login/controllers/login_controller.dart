@@ -1,23 +1,71 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:muklog/app/routes/app_pages.dart';
+
+import '../../../../common/utils/app_service.dart';
+import '../../../../common/utils/logger.dart';
 
 class LoginController extends GetxController {
-  //TODO: Implement LoginController
+  Timer? _loginCheckTimer;
+  bool isChecking = false;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _googleSignIn = GoogleSignIn();
+  final _api = ApiService();
+
+  Future<void> signInWithGoogle() async {
+    try {
+      if (kIsWeb) {
+        if (_loginCheckTimer != null) {
+          _loginCheckTimer?.cancel();
+        }
+        // 🔥 Web에서 popup 방식 사용
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        FirebaseAuth.instance.signInWithPopup(googleProvider);
+        startLoginChecker();
+        isChecking = true;
+      } else {
+        final GoogleSignIn _googleSignIn = GoogleSignIn(
+          scopes: ['email'],
+          serverClientId:
+              '68241899379-31ma7fhvmgu4gpirqvk4lgim401lrp6g.apps.googleusercontent.com',
+        );
+
+        // Mobile 방식
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+        if (googleUser == null) return; // 로그인 취소 시
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+
+        OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        logger.d(credential);
+
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+        Get.offAllNamed(Routes.HOME);
+      }
+    } catch (e) {
+      logger.e("로그인 실패: $e");
+      Get.snackbar('로그인 오류', e.toString());
+    }
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  void startLoginChecker() {
+    _loginCheckTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        logger.d("✅ 로그인 성공: ${user.displayName}");
+        timer.cancel();
+        Get.offAllNamed(Routes.SPLASH);
+      }
+    });
   }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

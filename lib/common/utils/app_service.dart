@@ -9,7 +9,9 @@ import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
+import '../../app/models/api_response.dart';
+import '../../app/models/user_profile.dart';
+import '../../constants/api_constants.dart';
 import 'dio.dart';
 import 'logger.dart';
 
@@ -89,6 +91,54 @@ class ApiService {
     }
   }
 
-  checkUserProfile({required String uid}) {}
+  /// 프로필 생성 (Cloud Function)
+  Future<ApiResponse<UserProfile>> createUserProfile({
+    required String uid,
+    required String nickname,
+    required String intro,
+    required String avatarUrl,
+  }) async {
+    try {
+      final res = await dio.post(
+        ApiConstants.createUserProfile,
+        data: {
+          'uid': uid,
+          'nickname': nickname,
+          'intro': intro,
+          'avatarUrl': avatarUrl,
+        },
+      );
 
+      final json = res.data as Map<String, dynamic>;
+      final parsed = ApiResponse<UserProfile>.fromJson(json, UserProfile.fromJson);
+
+      logger.i('✅ createUserProfile: ${parsed.message}');
+      return parsed;
+    } catch (e) {
+      logger.e('❌ createUserProfile error: $e');
+      rethrow;
+    }
+  }
+
+  /// 현재 로그인된 사용자의 프로필 조회
+  Future<UserProfile?> getUserProfile() async {
+    try {
+      final res = await dio.get(ApiConstants.getUserProfile);
+      logger.i('✅ getUserProfile success');
+
+      final json = res.data as Map<String, dynamic>;
+      final parsed = ApiResponse<UserProfile>.fromJson(json, UserProfile.fromJson);
+
+      if (parsed.success) {
+        logger.i('✅ createUserProfile: ${parsed.message}');
+        return parsed.data;
+      } else {
+        logger.w('⚠️ 서버 응답 실패: ${parsed.message}');
+        return null;
+      }
+    } catch (e) {
+      logger.e('❌ getUserProfile error: $e');
+      rethrow;
+    }
+  }
 }

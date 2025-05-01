@@ -9,24 +9,57 @@ import 'logger.dart';
 class AppInterceptor extends Interceptor {
   @override
   Future<void> onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
+      RequestOptions options,
+      RequestInterceptorHandler handler,
+      ) async {
     logger.i("🚀 [REQUEST] ${options.method} ${options.uri}");
     logger.d("Headers: ${options.headers}");
     logger.d("Data: ${options.data}");
 
-    final user = FirebaseAuth.instance.currentUser;
-    final idToken = await user?.getIdToken();
+    try {
+      final user = FirebaseAuth.instance.currentUser;
 
-    if (idToken != null) {
-      options.headers['Authorization'] = 'Bearer $idToken';
+      if (user != null) {
+        final idToken = await user.getIdToken(true);
+
+        if (idToken!.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $idToken';
+        } else {
+          logger.w("⚠️ Firebase ID Token is empty");
+        }
+
+        handler.next(options); // 유저 + 토큰 정상 → 계속 진행
+      } else {
+        logger.w("❌ 로그인 안 된 사용자 요청 차단");
+        _redirectToLogin();
+        handler.reject(
+          DioException(
+            requestOptions: options,
+            error: 'User not authenticated',
+            type: DioExceptionType.cancel,
+          ),
+        );
+      }
+    } catch (e) {
+      logger.e("❌ Firebase 인증 처리 중 오류: $e");
+      _redirectToLogin();
+      handler.reject(
+        DioException(
+          requestOptions: options,
+          error: 'Firebase auth token error',
+          type: DioExceptionType.cancel,
+        ),
+      );
     }
-
-    return handler.next(options); // 계속 진행
-
-    super.onRequest(options, handler);
   }
+
+  void _redirectToLogin() {
+    // 기존 라우트 모두 제거하고 로그인 화면으로 이동
+    if (g.Get.currentRoute != Routes.SPLASH) {
+      g.Get.offAllNamed(Routes.SPLASH);
+    }
+  }
+
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {

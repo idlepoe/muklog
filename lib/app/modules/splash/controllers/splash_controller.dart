@@ -23,12 +23,15 @@ class SplashController extends GetxController {
       Get.offAllNamed(Routes.LOGIN);
       return;
     }
-
-    final hasProfile = await _api.checkUserProfile(uid: user.uid);
-    if (hasProfile) {
-      Get.offAllNamed(Routes.HOME);
-    } else {
-      Get.offAllNamed(Routes.INIT_USER_PROFILE);
+    try {
+      final hasProfile = await _api.getUserProfile();
+      if (hasProfile != null) {
+        Get.offAllNamed(Routes.HOME);
+      } else {
+        Get.offAllNamed(Routes.INIT_USER_PROFILE);
+      }
+    } catch (e) {
+      Get.snackbar(e.toString(),e.toString());
     }
   }
 }

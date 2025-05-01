@@ -12,11 +12,7 @@ class SplashView extends GetView<SplashController> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            FlutterLogo(size: 80),
-            SizedBox(height: 20),
-            CircularProgressIndicator(),
-          ],
+          children: const [CircularProgressIndicator()],
         ),
       ),
     );

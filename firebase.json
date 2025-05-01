@@ -1,1 +1,54 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"muklog","appId":"1:68241899379:android:e1ed788e8fb10354c78f06","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"muklog","configurations":{"android":"1:68241899379:android:e1ed788e8fb10354c78f06","ios":"1:68241899379:ios:1bffeb63fc89e4a5c78f06","web":"1:68241899379:web:56c8b5977862c102c78f06"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "muklog",
+          "appId": "1:68241899379:android:e1ed788e8fb10354c78f06",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "muklog",
+          "configurations": {
+            "android": "1:68241899379:android:e1ed788e8fb10354c78f06",
+            "ios": "1:68241899379:ios:1bffeb63fc89e4a5c78f06",
+            "web": "1:68241899379:web:56c8b5977862c102c78f06"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ],
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}

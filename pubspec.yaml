@@ -48,13 +48,13 @@ flutter:
   assets:
     - assets/
     - assets/icon/
+    - assets/images/
     - assets/fonts/
-    - assets/audio/
     - shorebird.yaml
   fonts:
-    - family: UhBee
+    - family: BMYEONSUNG
       fonts:
-        - asset: assets/fonts/UhBee_MiMi.ttf
+        - asset: assets/fonts/BMYEONSUNG.ttf
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
