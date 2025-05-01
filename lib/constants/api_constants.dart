@@ -12,8 +12,9 @@ class ApiConstants {
   static const String createQuestion = "/createQuestion";
   static const String getMyQuestions = "/getMyQuestions";
   static const String getQuestionDetail = "/getQuestionDetail";
-  static const String getTodayQuestion = "/getTodayQuestion";
+  static const String getDailyQuestions = "/getDailyQuestions";
   static const String submitAnswer = "/submitAnswer";
+  static const String checkAlreadySolved = "/checkAlreadySolved";
 
   // 👥 FOLLOW
   static const String getFollowers = "/getFollowers";

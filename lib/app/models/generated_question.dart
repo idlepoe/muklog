@@ -28,6 +28,7 @@ DateTime _toDateTime(dynamic value) {
 @freezed
 abstract class GeneratedQuestion with _$GeneratedQuestion {
   const factory GeneratedQuestion({
+    String? questionId, // ✅ 추가
     @JsonKey(fromJson: _toString) required String question,
     required List<String> choices,
     @JsonKey(fromJson: _toString) required String answer,

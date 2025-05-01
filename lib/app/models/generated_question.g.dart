@@ -8,6 +8,7 @@ part of 'generated_question.dart';
 
 _GeneratedQuestion _$GeneratedQuestionFromJson(Map<String, dynamic> json) =>
     _GeneratedQuestion(
+      questionId: json['questionId'] as String?,
       question: _toString(json['question']),
       choices:
           (json['choices'] as List<dynamic>).map((e) => e as String).toList(),
@@ -21,6 +22,7 @@ _GeneratedQuestion _$GeneratedQuestionFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$GeneratedQuestionToJson(_GeneratedQuestion instance) =>
     <String, dynamic>{
+      'questionId': instance.questionId,
       'question': instance.question,
       'choices': instance.choices,
       'answer': instance.answer,

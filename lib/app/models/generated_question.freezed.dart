@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GeneratedQuestion {
 
+ String? get questionId;// ✅ 추가
 @JsonKey(fromJson: _toString) String get question; List<String> get choices;@JsonKey(fromJson: _toString) String get answer;@JsonKey(fromJson: _toString) String get explanation;@JsonKey(fromJson: _toString) String get imageUrl;@JsonKey(fromJson: _toString) String get userPrice; String get type;// 'objective' | 'ox' 등
  String? get foodName;
 /// Create a copy of GeneratedQuestion
@@ -30,16 +31,16 @@ $GeneratedQuestionCopyWith<GeneratedQuestion> get copyWith => _$GeneratedQuestio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GeneratedQuestion&&(identical(other.question, question) || other.question == question)&&const DeepCollectionEquality().equals(other.choices, choices)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.explanation, explanation) || other.explanation == explanation)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.userPrice, userPrice) || other.userPrice == userPrice)&&(identical(other.type, type) || other.type == type)&&(identical(other.foodName, foodName) || other.foodName == foodName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GeneratedQuestion&&(identical(other.questionId, questionId) || other.questionId == questionId)&&(identical(other.question, question) || other.question == question)&&const DeepCollectionEquality().equals(other.choices, choices)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.explanation, explanation) || other.explanation == explanation)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.userPrice, userPrice) || other.userPrice == userPrice)&&(identical(other.type, type) || other.type == type)&&(identical(other.foodName, foodName) || other.foodName == foodName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,question,const DeepCollectionEquality().hash(choices),answer,explanation,imageUrl,userPrice,type,foodName);
+int get hashCode => Object.hash(runtimeType,questionId,question,const DeepCollectionEquality().hash(choices),answer,explanation,imageUrl,userPrice,type,foodName);
 
 @override
 String toString() {
-  return 'GeneratedQuestion(question: $question, choices: $choices, answer: $answer, explanation: $explanation, imageUrl: $imageUrl, userPrice: $userPrice, type: $type, foodName: $foodName)';
+  return 'GeneratedQuestion(questionId: $questionId, question: $question, choices: $choices, answer: $answer, explanation: $explanation, imageUrl: $imageUrl, userPrice: $userPrice, type: $type, foodName: $foodName)';
 }
 
 
@@ -50,7 +51,7 @@ abstract mixin class $GeneratedQuestionCopyWith<$Res>  {
   factory $GeneratedQuestionCopyWith(GeneratedQuestion value, $Res Function(GeneratedQuestion) _then) = _$GeneratedQuestionCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _toString) String question, List<String> choices,@JsonKey(fromJson: _toString) String answer,@JsonKey(fromJson: _toString) String explanation,@JsonKey(fromJson: _toString) String imageUrl,@JsonKey(fromJson: _toString) String userPrice, String type, String? foodName
+ String? questionId,@JsonKey(fromJson: _toString) String question, List<String> choices,@JsonKey(fromJson: _toString) String answer,@JsonKey(fromJson: _toString) String explanation,@JsonKey(fromJson: _toString) String imageUrl,@JsonKey(fromJson: _toString) String userPrice, String type, String? foodName
 });
 
 
@@ -67,9 +68,10 @@ class _$GeneratedQuestionCopyWithImpl<$Res>
 
 /// Create a copy of GeneratedQuestion
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? question = null,Object? choices = null,Object? answer = null,Object? explanation = null,Object? imageUrl = null,Object? userPrice = null,Object? type = null,Object? foodName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? questionId = freezed,Object? question = null,Object? choices = null,Object? answer = null,Object? explanation = null,Object? imageUrl = null,Object? userPrice = null,Object? type = null,Object? foodName = freezed,}) {
   return _then(_self.copyWith(
-question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+questionId: freezed == questionId ? _self.questionId : questionId // ignore: cast_nullable_to_non_nullable
+as String?,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as String,choices: null == choices ? _self.choices : choices // ignore: cast_nullable_to_non_nullable
 as List<String>,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
 as String,explanation: null == explanation ? _self.explanation : explanation // ignore: cast_nullable_to_non_nullable
@@ -88,9 +90,11 @@ as String?,
 @JsonSerializable()
 
 class _GeneratedQuestion implements GeneratedQuestion {
-  const _GeneratedQuestion({@JsonKey(fromJson: _toString) required this.question, required final  List<String> choices, @JsonKey(fromJson: _toString) required this.answer, @JsonKey(fromJson: _toString) required this.explanation, @JsonKey(fromJson: _toString) required this.imageUrl, @JsonKey(fromJson: _toString) required this.userPrice, this.type = 'objective', this.foodName}): _choices = choices;
+  const _GeneratedQuestion({this.questionId, @JsonKey(fromJson: _toString) required this.question, required final  List<String> choices, @JsonKey(fromJson: _toString) required this.answer, @JsonKey(fromJson: _toString) required this.explanation, @JsonKey(fromJson: _toString) required this.imageUrl, @JsonKey(fromJson: _toString) required this.userPrice, this.type = 'objective', this.foodName}): _choices = choices;
   factory _GeneratedQuestion.fromJson(Map<String, dynamic> json) => _$GeneratedQuestionFromJson(json);
 
+@override final  String? questionId;
+// ✅ 추가
 @override@JsonKey(fromJson: _toString) final  String question;
  final  List<String> _choices;
 @override List<String> get choices {
@@ -120,16 +124,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GeneratedQuestion&&(identical(other.question, question) || other.question == question)&&const DeepCollectionEquality().equals(other._choices, _choices)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.explanation, explanation) || other.explanation == explanation)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.userPrice, userPrice) || other.userPrice == userPrice)&&(identical(other.type, type) || other.type == type)&&(identical(other.foodName, foodName) || other.foodName == foodName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GeneratedQuestion&&(identical(other.questionId, questionId) || other.questionId == questionId)&&(identical(other.question, question) || other.question == question)&&const DeepCollectionEquality().equals(other._choices, _choices)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.explanation, explanation) || other.explanation == explanation)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.userPrice, userPrice) || other.userPrice == userPrice)&&(identical(other.type, type) || other.type == type)&&(identical(other.foodName, foodName) || other.foodName == foodName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,question,const DeepCollectionEquality().hash(_choices),answer,explanation,imageUrl,userPrice,type,foodName);
+int get hashCode => Object.hash(runtimeType,questionId,question,const DeepCollectionEquality().hash(_choices),answer,explanation,imageUrl,userPrice,type,foodName);
 
 @override
 String toString() {
-  return 'GeneratedQuestion(question: $question, choices: $choices, answer: $answer, explanation: $explanation, imageUrl: $imageUrl, userPrice: $userPrice, type: $type, foodName: $foodName)';
+  return 'GeneratedQuestion(questionId: $questionId, question: $question, choices: $choices, answer: $answer, explanation: $explanation, imageUrl: $imageUrl, userPrice: $userPrice, type: $type, foodName: $foodName)';
 }
 
 
@@ -140,7 +144,7 @@ abstract mixin class _$GeneratedQuestionCopyWith<$Res> implements $GeneratedQues
   factory _$GeneratedQuestionCopyWith(_GeneratedQuestion value, $Res Function(_GeneratedQuestion) _then) = __$GeneratedQuestionCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _toString) String question, List<String> choices,@JsonKey(fromJson: _toString) String answer,@JsonKey(fromJson: _toString) String explanation,@JsonKey(fromJson: _toString) String imageUrl,@JsonKey(fromJson: _toString) String userPrice, String type, String? foodName
+ String? questionId,@JsonKey(fromJson: _toString) String question, List<String> choices,@JsonKey(fromJson: _toString) String answer,@JsonKey(fromJson: _toString) String explanation,@JsonKey(fromJson: _toString) String imageUrl,@JsonKey(fromJson: _toString) String userPrice, String type, String? foodName
 });
 
 
@@ -157,9 +161,10 @@ class __$GeneratedQuestionCopyWithImpl<$Res>
 
 /// Create a copy of GeneratedQuestion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? question = null,Object? choices = null,Object? answer = null,Object? explanation = null,Object? imageUrl = null,Object? userPrice = null,Object? type = null,Object? foodName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? questionId = freezed,Object? question = null,Object? choices = null,Object? answer = null,Object? explanation = null,Object? imageUrl = null,Object? userPrice = null,Object? type = null,Object? foodName = freezed,}) {
   return _then(_GeneratedQuestion(
-question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+questionId: freezed == questionId ? _self.questionId : questionId // ignore: cast_nullable_to_non_nullable
+as String?,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as String,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as List<String>,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
 as String,explanation: null == explanation ? _self.explanation : explanation // ignore: cast_nullable_to_non_nullable

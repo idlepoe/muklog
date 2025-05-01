@@ -202,15 +202,28 @@ class ApiService {
   }
 
   /// 오늘의 문제 조회
-  Future<ApiResponse<Question>> getTodayQuestion() async {
-    try {
-      final res = await dio.get(ApiConstants.getTodayQuestion);
-      final json = res.data as Map<String, dynamic>;
-      return ApiResponse<Question>.fromJson(json, Question.fromJson);
-    } catch (e) {
-      logger.e('❌ getTodayQuestion error: $e');
-      rethrow;
+  Future<Map<String, GeneratedQuestion?>> getDailyQuestions() async {
+    final response = await dio.get(ApiConstants.getDailyQuestions);
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '오늘의 문제 불러오기 실패');
     }
+
+    final data = response.data['data'] as Map<String, dynamic>;
+    return {
+      'random':
+          data['random'] == null
+              ? null
+              : GeneratedQuestion.fromJson(data['random']),
+      'friend':
+          data['friend'] == null
+              ? null
+              : GeneratedQuestion.fromJson(data['friend']),
+      'popular':
+          data['popular'] == null
+              ? null
+              : GeneratedQuestion.fromJson(data['popular']),
+    };
   }
 
   /// 문제 상세 조회
@@ -240,7 +253,9 @@ class ApiService {
   }
 
   /// 문제 출제
-  Future<Map<String, dynamic>> createQuestion(GeneratedQuestion question) async {
+  Future<Map<String, dynamic>> createQuestion(
+    GeneratedQuestion question,
+  ) async {
     final response = await dio.post(
       ApiConstants.createQuestion,
       data: question.toJson(),
@@ -255,29 +270,27 @@ class ApiService {
 
     logger.d('출제 성공: $questionId, 포인트 +$pointGained');
 
-    return {
-      'questionId': questionId,
-      'pointGained': pointGained,
-    };
+    return {'questionId': questionId, 'pointGained': pointGained};
   }
 
-
   /// 정답 제출
-  Future<ApiResponse<AnswerResult>> submitAnswer(
-    String questionId,
-    int choiceIndex,
-  ) async {
-    try {
-      final res = await dio.post(
-        ApiConstants.submitAnswer,
-        data: {'questionId': questionId, 'choiceIndex': choiceIndex},
-      );
-      final json = res.data as Map<String, dynamic>;
-      return ApiResponse<AnswerResult>.fromJson(json, AnswerResult.fromJson);
-    } catch (e) {
-      logger.e('❌ submitAnswer error: $e');
-      rethrow;
+  Future<Map<String, dynamic>> submitAnswer({
+    required String questionId,
+    required String selected,
+  }) async {
+    final response = await dio.post(
+      ApiConstants.submitAnswer,
+      data: {'questionId': questionId, 'selected': selected},
+    );
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '정답 제출 실패');
     }
+
+    return {
+      'isCorrect': response.data['data']['isCorrect'],
+      'point': response.data['data']['point'],
+    };
   }
 
   Future<ApiResponse<List<UserRanking>>> getRankingList() async {
@@ -346,21 +359,24 @@ class ApiService {
 
     final prompt = [
       Content.multi([
-        TextPart('''이 음식의 이름과 전국 평균 가격을 바탕으로, 사용자 참여형 객관식 퀴즈를 만들어줘.
+        TextPart(r'''
+이 음식의 이름과 사용자가 입력한 가격을 바탕으로, 사용자 참여형 객관식 퀴즈를 만들어줘.
 
 조건:
-- 문제는 이 음식의 가격을 맞히는 객관식 퀴즈 형식이어야 함.
-- 정답은 전국 평균 가격이어야 함.
+- 문제는 이 음식의 가격을 맞히는 객관식 퀴즈 형식이어야 해.
+- 정답은 사용자가 입력한 가격이어야 해.
 - 사용자가 입력한 가격 ($userPrice 원)을 선택지 중 하나로 포함시켜 혼동을 유도해줘.
 - 나머지 3개의 선택지는 plausible하지만 정답이 아닌 가격으로 구성해줘.
-- 결과는 JSON 형식으로 반환. 예시는 아래와 같음:
+- 해설에는 평균 가격과, 사용자의 가격이 왜 다른지에 대한 추측을 포함해줘.
+- 결과는 JSON 형식으로 반환해줘. 예시는 아래와 같아:
 
 {
   "type": "objective",
-  "question": "이 음식의 평균 가격은 얼마일까요?",
+  "question": "이 음식의 가격은 얼마일까요?",
   "choices": ["2500원", "3200원", "3000원", "4000원"],
-  "answer": "2500원",
-  "explanation": "김밥의 전국 평균 가격은 약 2,500원입니다.",
+  "answer": "3200원",
+  "explanation": "이 음식의 평균 가격은 약 2,800원이지만, 사용자가 구매한 가격은 3,200원입니다. 
+포장 상태가 좋거나 유명 맛집에서 구매했을 가능성이 있습니다.",
   "foodName": "김밥"
 }
 '''),
@@ -379,5 +395,15 @@ class ApiService {
     return GeneratedQuestion.fromJson(
       decoded,
     ).copyWith(imageUrl: imageUrl, userPrice: userPrice);
+  }
+
+  Future<bool> hasUserSolvedQuestion({required String questionId}) async {
+    final response = await dio.get(
+      ApiConstants.checkAlreadySolved,
+      queryParameters: {'questionId': questionId},
+    );
+
+    if (!(response.data['success'] ?? false)) return false;
+    return response.data['data']['alreadySolved'] ?? false;
   }
 }

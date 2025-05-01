@@ -16,8 +16,9 @@ export { getPointHistory } from './user/getPointHistory';
 export { createQuestion } from './question/createQuestion';
 export { getMyQuestions } from './question/getMyQuestions';
 export { getQuestionDetail } from './question/getQuestionDetail';
-export { getTodayQuestion } from './question/getTodayQuestion';
+export { getDailyQuestions } from './question/getDailyQuestions';
 export { submitAnswer } from './question/submitAnswer';
+export { checkAlreadySolved } from './question/checkAlreadySolved';
 
 /** FOLLOW */
 export { getFollowers } from './follow/getFollowers';
