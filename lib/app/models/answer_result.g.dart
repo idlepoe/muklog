@@ -8,7 +8,7 @@ part of 'answer_result.dart';
 
 _AnswerResult _$AnswerResultFromJson(Map<String, dynamic> json) =>
     _AnswerResult(
-      isCorrect: json['isCorrect'] as bool,
+      isCorrect: _toBool(json['isCorrect']),
       correctAnswerIndex: _toInt(json['correctAnswerIndex']),
       earnedPoint: _toInt(json['earnedPoint']),
       comment: _toString(json['comment']),

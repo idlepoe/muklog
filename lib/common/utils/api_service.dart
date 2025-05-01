@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 
@@ -7,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:muklog/app/models/generated_question.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../app/models/answer_result.dart';
@@ -213,7 +216,9 @@ class ApiService {
   /// 문제 상세 조회
   Future<ApiResponse<Question>> getQuestionDetail(String questionId) async {
     try {
-      final res = await dio.get('${ApiConstants.getQuestionDetail}?id=$questionId');
+      final res = await dio.get(
+        '${ApiConstants.getQuestionDetail}?id=$questionId',
+      );
       final json = res.data as Map<String, dynamic>;
       return ApiResponse<Question>.fromJson(json, Question.fromJson);
     } catch (e) {
@@ -235,24 +240,38 @@ class ApiService {
   }
 
   /// 문제 출제
-  Future<ApiResponse<bool>> createQuestion(Map<String, dynamic> data) async {
-    try {
-      final res = await dio.post(ApiConstants.createQuestion, data: data);
-      final json = res.data as Map<String, dynamic>;
-      return ApiResponse<bool>.fromJson(json, (v) => true);
-    } catch (e) {
-      logger.e('❌ createQuestion error: $e');
-      rethrow;
+  Future<Map<String, dynamic>> createQuestion(GeneratedQuestion question) async {
+    final response = await dio.post(
+      ApiConstants.createQuestion,
+      data: question.toJson(),
+    );
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '문제 출제 실패');
     }
+
+    final String questionId = response.data['data']['questionId'];
+    final int pointGained = response.data['data']['pointGained'] ?? 0;
+
+    logger.d('출제 성공: $questionId, 포인트 +$pointGained');
+
+    return {
+      'questionId': questionId,
+      'pointGained': pointGained,
+    };
   }
 
+
   /// 정답 제출
-  Future<ApiResponse<AnswerResult>> submitAnswer(String questionId, int choiceIndex) async {
+  Future<ApiResponse<AnswerResult>> submitAnswer(
+    String questionId,
+    int choiceIndex,
+  ) async {
     try {
-      final res = await dio.post(ApiConstants.submitAnswer, data: {
-        'questionId': questionId,
-        'choiceIndex': choiceIndex,
-      });
+      final res = await dio.post(
+        ApiConstants.submitAnswer,
+        data: {'questionId': questionId, 'choiceIndex': choiceIndex},
+      );
       final json = res.data as Map<String, dynamic>;
       return ApiResponse<AnswerResult>.fromJson(json, AnswerResult.fromJson);
     } catch (e) {
@@ -296,9 +315,10 @@ class ApiService {
 
   Future<ApiResponse<bool>> toggleFollow(String targetUid) async {
     try {
-      final res = await dio.post(ApiConstants.toggleFollow, data: {
-        'targetUid': targetUid,
-      });
+      final res = await dio.post(
+        ApiConstants.toggleFollow,
+        data: {'targetUid': targetUid},
+      );
       final json = res.data as Map<String, dynamic>;
       return ApiResponse<bool>.fromJson(json, (v) => true);
     } catch (e) {
@@ -318,4 +338,46 @@ class ApiService {
     }
   }
 
+  Future<GeneratedQuestion> generateQuestionFromImage({
+    required XFile xFile,
+    required String userPrice,
+  }) async {
+    final imageUrl = await uploadFileToStorage(xFile: xFile);
+
+    final prompt = [
+      Content.multi([
+        TextPart('''이 음식의 이름과 전국 평균 가격을 바탕으로, 사용자 참여형 객관식 퀴즈를 만들어줘.
+
+조건:
+- 문제는 이 음식의 가격을 맞히는 객관식 퀴즈 형식이어야 함.
+- 정답은 전국 평균 가격이어야 함.
+- 사용자가 입력한 가격 ($userPrice 원)을 선택지 중 하나로 포함시켜 혼동을 유도해줘.
+- 나머지 3개의 선택지는 plausible하지만 정답이 아닌 가격으로 구성해줘.
+- 결과는 JSON 형식으로 반환. 예시는 아래와 같음:
+
+{
+  "type": "objective",
+  "question": "이 음식의 평균 가격은 얼마일까요?",
+  "choices": ["2500원", "3200원", "3000원", "4000원"],
+  "answer": "2500원",
+  "explanation": "김밥의 전국 평균 가격은 약 2,500원입니다.",
+  "foodName": "김밥"
+}
+'''),
+      ]),
+      Content("user", [FileData("image/jpeg", imageUrl)]),
+    ];
+
+    final response = await _gemini.generateContent(prompt);
+
+    final resultText =
+        ((response.candidates.first.content.parts.first) as TextPart).text;
+    final cleaned = resultText.replaceAll(RegExp(r'^```json|```$'), '').trim();
+    logger.d(cleaned);
+    final decoded = json.decode(cleaned);
+
+    return GeneratedQuestion.fromJson(
+      decoded,
+    ).copyWith(imageUrl: imageUrl, userPrice: userPrice);
+  }
 }

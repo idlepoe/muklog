@@ -11,7 +11,7 @@ _AppNotification _$AppNotificationFromJson(Map<String, dynamic> json) =>
       id: _toString(json['id']),
       title: _toString(json['title']),
       body: _toString(json['body']),
-      isRead: json['isRead'] as bool,
+      isRead: _toBool(json['isRead']),
       createdAt: _toDateTime(json['createdAt']),
       deepLink: _toString(json['deepLink']),
     );
