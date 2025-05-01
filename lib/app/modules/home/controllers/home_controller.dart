@@ -7,9 +7,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 
+import '../../daily_question/controllers/daily_question_controller.dart';
 import '../../daily_question/views/daily_question_view.dart';
+import '../../profile/controllers/profile_controller.dart';
 import '../../profile/views/profile_view.dart';
+import '../../ranking/controllers/ranking_controller.dart';
 import '../../ranking/views/ranking_view.dart';
+import '../../submit_question/controllers/submit_question_controller.dart';
 import '../../submit_question/views/submit_question_view.dart';
 
 class HomeController extends GetxController {
@@ -17,15 +21,19 @@ class HomeController extends GetxController {
   final updater = ShorebirdUpdater();
 
   final pages = [
-    const DailyQuestionView(),     // 🏠 홈: 오늘의 문제
-    const SubmitQuestionView(),   // 📸 출제
-    const RankingView(),          // 🏅 랭킹
-    const ProfileView(),          // 👤 프로필
+    const DailyQuestionView(), // 🏠 홈: 오늘의 문제
+    const SubmitQuestionView(), // 📸 출제
+    const RankingView(), // 🏅 랭킹
+    const ProfileView(), // 👤 프로필
   ];
 
   @override
   void onInit() {
     super.onInit();
+    Get.put(DailyQuestionController());
+    Get.put(SubmitQuestionController());
+    Get.put(RankingController());
+    Get.put(ProfileController());
   }
 
   @override
@@ -43,6 +51,15 @@ class HomeController extends GetxController {
 
   void changeTab(int index) {
     currentIndex.value = index;
+    if (index == 0) {
+      Get.put(DailyQuestionController());
+    } else if (index == 1) {
+      Get.put(SubmitQuestionController());
+    } else if (index == 2) {
+      Get.put(RankingController());
+    } else if (index == 3) {
+      Get.put(ProfileController());
+    }
   }
 
   Future<void> requestPushPermissionIfNeeded() async {

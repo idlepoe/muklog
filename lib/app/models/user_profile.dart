@@ -4,7 +4,7 @@ part 'user_profile.freezed.dart';
 part 'user_profile.g.dart';
 
 // null → '' 또는 '값'.toString()
-String _toString(dynamic value) => value?.toString() ?? '';
+String _toString(dynamic value) =>  value?.toString() ?? '';
 
 // null → 0
 int _toInt(dynamic value) => value is int ? value : int.tryParse(value?.toString() ?? '') ?? 0;

@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:muklog/app/routes/app_pages.dart';
 
-import '../../../../common/utils/app_service.dart';
+import '../../../../common/utils/api_service.dart';
 import '../../../../common/utils/logger.dart';
 
 class LoginController extends GetxController {

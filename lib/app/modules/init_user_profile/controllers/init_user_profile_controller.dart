@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:muklog/app/routes/app_pages.dart';
 
-import '../../../../common/utils/app_service.dart';
+import '../../../../common/utils/api_service.dart';
 
 class InitUserProfileController extends GetxController {
   final nickname = ''.obs;

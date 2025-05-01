@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/utils/app_service.dart';
+import '../../../../common/utils/api_service.dart';
 import '../../../routes/app_pages.dart'; // ← AppService import
 
 class SplashController extends GetxController {
