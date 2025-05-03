@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../common/widgets/bottom_button.dart';
+import '../../../../common/widgets/x_file_preview.dart';
 import '../../../models/generated_question.dart';
 import '../controllers/submit_question_controller.dart';
 
@@ -13,6 +15,23 @@ class SubmitQuestionView extends GetView<SubmitQuestionController> {
     return Scaffold(
       appBar: AppBar(title: const Text('문제 출제')),
       body: Obx(() {
+        final step = controller.step.value;
+
+        if (step != SubmitStep.idle) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Text(
+                  controller.loadingMessage,
+                  style: const TextStyle(color: Colors.black87),
+                ),
+              ],
+            ),
+          );
+        }
         return Padding(
           padding: const EdgeInsets.all(16),
           child:
@@ -32,9 +51,10 @@ class SubmitQuestionView extends GetView<SubmitQuestionController> {
                                       child: Text('사진을 선택하세요'),
                                     ),
                                   )
-                                  : Image.file(
-                                    File(controller.selectedImage.value!.path),
+                                  : XFilePreview(
+                                    file: controller.selectedImage.value!,
                                     height: 200,
+                                    width: double.infinity,
                                   ),
                         ),
                         const SizedBox(height: 16),
@@ -47,9 +67,9 @@ class SubmitQuestionView extends GetView<SubmitQuestionController> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        ElevatedButton(
+                        BottomButton(
+                          text: "AI 문제 생성",
                           onPressed: controller.generateQuestion,
-                          child: const Text('AI 문제 생성'),
                         ),
                         const SizedBox(height: 16),
                         if (controller.generatedQuestion.value != null)
@@ -107,19 +127,7 @@ class SubmitQuestionView extends GetView<SubmitQuestionController> {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: controller.submitQuestion,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.orangeAccent,
-            foregroundColor: Colors.black,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 2,
-          ),
-          child: const Text('문제 출제하기'),
-        ),
+        BottomButton(text: "문제 출제하기", onPressed: controller.submitQuestion),
       ],
     );
   }

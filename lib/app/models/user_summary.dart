@@ -1,7 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'user_ranking.freezed.dart';
-part 'user_ranking.g.dart';
+part 'user_summary.freezed.dart';
+part 'user_summary.g.dart';
+
 // null → '' 또는 '값'.toString()
 String _toString(dynamic value) =>  value?.toString() ?? '';
 
@@ -21,20 +22,15 @@ DateTime _toDateTime(dynamic value) {
 }
 
 @freezed
-abstract class UserRanking with _$UserRanking {
-  const factory UserRanking({
+abstract class UserSummary with _$UserSummary {
+  const factory UserSummary({
     @JsonKey(fromJson: _toString) required String uid,
     @JsonKey(fromJson: _toString) required String nickname,
     @JsonKey(fromJson: _toString) required String avatarUrl,
-    @JsonKey(fromJson: _toInt) required int point,
     @JsonKey(fromJson: _toInt) required int level,
-    @JsonKey(fromJson: _toString) required String title,
-    @JsonKey(fromJson: _toInt) required int questionCount,
-    @JsonKey(fromJson: _toInt) required int correctRate,
-    @JsonKey(fromJson: _toInt) required int playCount,
-    @JsonKey(fromJson: _toDateTime) required DateTime levelUpAt,
-  }) = _UserRanking;
+  }) = _UserSummary;
 
-  factory UserRanking.fromJson(Map<String, dynamic> json) =>
-      _$UserRankingFromJson(json);
+  factory UserSummary.fromJson(Map<String, dynamic> json) => _$UserSummaryFromJson(json);
 }
+
+

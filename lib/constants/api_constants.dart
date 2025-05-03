@@ -15,11 +15,13 @@ class ApiConstants {
   static const String getDailyQuestions = "/getDailyQuestions";
   static const String submitAnswer = "/submitAnswer";
   static const String checkAlreadySolved = "/checkAlreadySolved";
+  static const String likeQuestion = "/likeQuestion";
 
   // 👥 FOLLOW
   static const String getFollowers = "/getFollowers";
   static const String getFollowing = "/getFollowing";
   static const String toggleFollow = "/toggleFollow";
+  static const String isFollowing = "/isFollowing";
 
   // 🏆 RANKING
   static const String getRankingList = "/getRankingList";

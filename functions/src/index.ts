@@ -19,8 +19,10 @@ export { getQuestionDetail } from './question/getQuestionDetail';
 export { getDailyQuestions } from './question/getDailyQuestions';
 export { submitAnswer } from './question/submitAnswer';
 export { checkAlreadySolved } from './question/checkAlreadySolved';
+export { likeQuestion } from './question/likeQuestion';
 
 /** FOLLOW */
+export { isFollowing } from './follow/isFollowing';
 export { getFollowers } from './follow/getFollowers';
 export { getFollowing } from './follow/getFollowing';
 export { toggleFollow } from './follow/toggleFollow';

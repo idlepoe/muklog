@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'question.freezed.dart';
 part 'question.g.dart';
+
 // null → '' 또는 '값'.toString()
 String _toString(dynamic value) =>  value?.toString() ?? '';
 
@@ -23,14 +24,20 @@ DateTime _toDateTime(dynamic value) {
 @freezed
 abstract class Question with _$Question {
   const factory Question({
-    @JsonKey(fromJson: _toString) required String id,
-    @JsonKey(fromJson: _toString) required String imageUrl,
-    @JsonKey(fromJson: _toString) required String description,
+    @JsonKey(fromJson: _toString) required String questionId,
+    @JsonKey(fromJson: _toString) required String uid,
+    @JsonKey(fromJson: _toString) required String question,
     required List<String> choices,
-    @JsonKey(fromJson: _toInt) required int answerIndex,
-    @JsonKey(fromJson: _toString) required String authorUid,
-    @JsonKey(fromJson: _toString) required String authorNickname,
+    @JsonKey(fromJson: _toString) required String answer,
+    @JsonKey(fromJson: _toString) required String explanation,
+    @JsonKey(fromJson: _toString) required String imageUrl,
+    @JsonKey(fromJson: _toString) required String userPrice,
+    @JsonKey(fromJson: _toString) required String type,
+    @JsonKey(fromJson: _toString) required String foodName,
+    @JsonKey(fromJson: _toInt) required int likeCount,
+    @JsonKey(fromJson: _toInt) required int playCount,
     @JsonKey(fromJson: _toDateTime) required DateTime createdAt,
+    @JsonKey(fromJson: _toDateTime) required DateTime updatedAt,
   }) = _Question;
 
   factory Question.fromJson(Map<String, dynamic> json) =>

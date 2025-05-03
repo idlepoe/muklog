@@ -13,9 +13,15 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: InkWell(onTap: () {
-        controller.fetchQuestions();
-      },child: const Text('오늘의 진품먹품'))),
+      appBar: AppBar(
+        title: const Text('오늘의 진품먹품'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: controller.fetchData,
+          )
+        ],
+      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -30,21 +36,72 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
               buildSection("👥 친구가 낸 문제", controller.friendQuestion.value!),
             if (controller.popularQuestion.value != null)
               buildSection("🔥 인기 문제", controller.popularQuestion.value!),
+            if (controller.randomQuestion.value == null &&
+                controller.friendQuestion.value == null &&
+                controller.popularQuestion.value == null) ...[
+              const SizedBox(height: 40),
+              Center(
+                child: Column(
+                  children: [
+                    const Text(
+                      '😶 아직 퀴즈가 없어요!',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      '당신이 첫 번째 출제자가 되어보세요 ✨',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        await Get.toNamed(Routes.SUBMIT_QUESTION);
+
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('퀴즈 출제하러 가기'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: 32),
+            const Text('🆙 최근 레벨업한 유저', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
+            if (controller.users.isEmpty) ...[
+              const SizedBox(height: 12),
+              Center(
+                child: Text(
+                  '아직 오늘은 레벨업한 유저가 없어요...\n첫 번째 주인공이 되어보세요! 🌟',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                ),
+              ),
+            ],
+            ...controller.users.map((user) => ListTile(
+              leading: CircleAvatar(backgroundImage: NetworkImage(user.avatarUrl)),
+              title: Text(user.nickname),
+              subtitle: Text('Lv. ${user.level}'),
+            ))
           ],
         );
       }),
     );
   }
 
-  Widget buildSection(String title, GeneratedQuestion q) {
+  Widget buildSection(String title, question) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 12),
       child: ListTile(
-        leading: Image.network(q.imageUrl, width: 60, fit: BoxFit.cover),
+        leading: Image.network(question.imageUrl, width: 60, fit: BoxFit.cover),
         title: Text(title),
-        subtitle: Text(q.question),
+        subtitle: Text(question.question),
         trailing: ElevatedButton(
-          onPressed: () => Get.toNamed(Routes.QUESTION_DETAIL, arguments: q),
+          onPressed: () => Get.toNamed(Routes.QUESTION_DETAIL, arguments: question),
           child: const Text('풀기'),
         ),
       ),

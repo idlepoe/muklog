@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../common/widgets/bottom_button.dart';
 import '../../../routes/app_pages.dart';
 import '../../profile_edit/views/profile_edit_view.dart';
 import '../controllers/profile_controller.dart';
@@ -58,13 +59,10 @@ class ProfileView extends GetView<ProfileController> {
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               SizedBox(height: 50),
-              ElevatedButton(
-                onPressed: () async {
-                  await Get.toNamed(Routes.PROFILE_EDIT, arguments: user);
-                  await controller.loadUserProfile();
-                },
-                child: Text("프로필 수정"),
-              ),
+              BottomButton(text: "프로필 수정", onPressed: () async {
+                await Get.toNamed(Routes.PROFILE_EDIT, arguments: user);
+                await controller.loadUserProfile();
+              })
             ],
           ),
         );

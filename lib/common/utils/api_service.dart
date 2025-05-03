@@ -202,7 +202,7 @@ class ApiService {
   }
 
   /// 오늘의 문제 조회
-  Future<Map<String, GeneratedQuestion?>> getDailyQuestions() async {
+  Future<Map<String, Question?>> getDailyQuestions() async {
     final response = await dio.get(ApiConstants.getDailyQuestions);
 
     if (!(response.data['success'] ?? false)) {
@@ -214,15 +214,15 @@ class ApiService {
       'random':
           data['random'] == null
               ? null
-              : GeneratedQuestion.fromJson(data['random']),
+              : Question.fromJson(data['random']),
       'friend':
           data['friend'] == null
               ? null
-              : GeneratedQuestion.fromJson(data['friend']),
+              : Question.fromJson(data['friend']),
       'popular':
           data['popular'] == null
               ? null
-              : GeneratedQuestion.fromJson(data['popular']),
+              : Question.fromJson(data['popular']),
     };
   }
 
@@ -287,57 +287,47 @@ class ApiService {
       throw Exception(response.data['message'] ?? '정답 제출 실패');
     }
 
+    final data = response.data['data'];
+    final author = data['author'];
+    final isFollowing = author['isFollowing'] == true;
+
     return {
-      'isCorrect': response.data['data']['isCorrect'],
-      'point': response.data['data']['point'],
+      'isCorrect': data['isCorrect'],
+      'pointGained': data['pointGained'],
+      'newLevel': data['newLevel'],
+      'levelUp': data['levelUp'],
+      'correctRate': data['correctRate'],
+      'authorUid': author['uid'],
+      'authorNickname': author['nickname'],
+      'avatarUrl': author['avatarUrl'],
+      'isFollowing': isFollowing,
     };
   }
 
-  Future<ApiResponse<List<UserRanking>>> getRankingList() async {
-    try {
-      final res = await dio.get(ApiConstants.getRankingList);
-      final json = res.data as Map<String, dynamic>;
-      return ApiResponse.fromJsonList(json, UserRanking.fromJson);
-    } catch (e) {
-      logger.e('❌ getRankingList error: $e');
-      rethrow;
-    }
-  }
+  Future<Map<String, dynamic>> getRankingList() async {
+    final response = await dio.get(ApiConstants.getRankingList);
 
-  Future<ApiResponse<List<UserProfile>>> getFollowers() async {
-    try {
-      final res = await dio.get(ApiConstants.getFollowers);
-      final json = res.data as Map<String, dynamic>;
-      return ApiResponse.fromJsonList(json, UserProfile.fromJson);
-    } catch (e) {
-      logger.e('❌ getFollowers error: $e');
-      rethrow;
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '랭킹 데이터 조회 실패');
     }
-  }
 
-  Future<ApiResponse<List<UserProfile>>> getFollowing() async {
-    try {
-      final res = await dio.get(ApiConstants.getFollowing);
-      final json = res.data as Map<String, dynamic>;
-      return ApiResponse.fromJsonList(json, UserProfile.fromJson);
-    } catch (e) {
-      logger.e('❌ getFollowing error: $e');
-      rethrow;
-    }
-  }
+    final data = response.data['data'] as Map<String, dynamic>;
 
-  Future<ApiResponse<bool>> toggleFollow(String targetUid) async {
-    try {
-      final res = await dio.post(
-        ApiConstants.toggleFollow,
-        data: {'targetUid': targetUid},
-      );
-      final json = res.data as Map<String, dynamic>;
-      return ApiResponse<bool>.fromJson(json, (v) => true);
-    } catch (e) {
-      logger.e('❌ toggleFollow error: $e');
-      rethrow;
-    }
+    return {
+      'pointRanking': (data['pointRanking'] as List)
+          .map((e) => UserRanking.fromJson(e))
+          .toList(),
+      'levelUpRanking': (data['levelUpRanking'] as List)
+          .map((e) => UserRanking.fromJson(e))
+          .toList(),
+      'questionRanking': (data['questionRanking'] as List)
+          .map((e) => UserRanking.fromJson(e))
+          .toList(),
+      'accuracyRanking': (data['accuracyRanking'] as List)
+          .map((e) => UserRanking.fromJson(e))
+          .toList(),
+      'myPointRank': data['myPointRank'], // e.g., { rank: 12, point: 1850 }
+    };
   }
 
   Future<ApiResponse<List<AppNotification>>> getNotifications() async {
@@ -352,34 +342,37 @@ class ApiService {
   }
 
   Future<GeneratedQuestion> generateQuestionFromImage({
-    required XFile xFile,
+    required String imageUrl,
     required String userPrice,
   }) async {
-    final imageUrl = await uploadFileToStorage(xFile: xFile);
+
+    final buffer = StringBuffer();
+
+    buffer.writeln('이 음식의 이름과 사용자가 입력한 가격을 바탕으로, 사용자 참여형 객관식 퀴즈를 만들어줘.');
+    buffer.writeln('**절대로 설명 없이 JSON 형식만 반환해줘.**\n');
+    buffer.writeln('조건:');
+    buffer.writeln('- 문제는 이 음식의 가격을 맞히는 객관식 퀴즈 형식이어야 해.');
+    buffer.writeln('- 정답은 반드시 사용자가 입력한 가격 ($userPrice 원)이어야 해.');
+    buffer.writeln('- 사용자가 입력한 가격을 선택지 중 하나로 포함해 혼동을 유도해줘.');
+    buffer.writeln('- 나머지 3개의 선택지는 plausible하지만 정답이 아닌 가격으로 구성해줘.');
+    buffer.writeln('- 해설에는 평균 가격과 사용자의 가격이 왜 다른지에 대한 추측을 포함해줘.');
+    buffer.writeln('- 반드시 아래와 같은 JSON 구조로만 응답해줘:\n');
+    buffer.writeln('```json');
+    buffer.writeln('{');
+    buffer.writeln('  "type": "objective",');
+    buffer.writeln('  "question": "이 음식의 가격은 얼마일까요?",');
+    buffer.writeln('  "choices": ["2500원", "3200원", "3000원", "4000원"],');
+    buffer.writeln('  "answer": "3200원",');
+    buffer.writeln('  "explanation": "이 음식의 평균 가격은 약 2,800원이지만, 사용자가 구매한 가격은 3,200원입니다. 포장 상태가 좋거나 유명 맛집에서 구매했을 가능성이 있습니다.",');
+    buffer.writeln('  "foodName": "김밥"');
+    buffer.writeln('}');
+    buffer.writeln('```');
+
+    final promptAppend = buffer.toString();
 
     final prompt = [
       Content.multi([
-        TextPart(r'''
-이 음식의 이름과 사용자가 입력한 가격을 바탕으로, 사용자 참여형 객관식 퀴즈를 만들어줘.
-
-조건:
-- 문제는 이 음식의 가격을 맞히는 객관식 퀴즈 형식이어야 해.
-- 정답은 사용자가 입력한 가격이어야 해.
-- 사용자가 입력한 가격 ($userPrice 원)을 선택지 중 하나로 포함시켜 혼동을 유도해줘.
-- 나머지 3개의 선택지는 plausible하지만 정답이 아닌 가격으로 구성해줘.
-- 해설에는 평균 가격과, 사용자의 가격이 왜 다른지에 대한 추측을 포함해줘.
-- 결과는 JSON 형식으로 반환해줘. 예시는 아래와 같아:
-
-{
-  "type": "objective",
-  "question": "이 음식의 가격은 얼마일까요?",
-  "choices": ["2500원", "3200원", "3000원", "4000원"],
-  "answer": "3200원",
-  "explanation": "이 음식의 평균 가격은 약 2,800원이지만, 사용자가 구매한 가격은 3,200원입니다. 
-포장 상태가 좋거나 유명 맛집에서 구매했을 가능성이 있습니다.",
-  "foodName": "김밥"
-}
-'''),
+        TextPart(promptAppend),
       ]),
       Content("user", [FileData("image/jpeg", imageUrl)]),
     ];
@@ -405,5 +398,75 @@ class ApiService {
 
     if (!(response.data['success'] ?? false)) return false;
     return response.data['data']['alreadySolved'] ?? false;
+  }
+
+  /// 팔로우 토글 (팔로우 or 언팔로우)
+  Future<bool> toggleFollow(String targetUid) async {
+    final response = await dio.post(
+      ApiConstants.toggleFollow,
+      data: {'targetUid': targetUid},
+    );
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '팔로우 처리 실패');
+    }
+
+    return response.data['data']['isFollowing'] == true;
+  }
+
+  /// 내가 팔로우한 유저 목록
+  Future<List<Map<String, dynamic>>> getFollowing() async {
+    final response = await dio.get(ApiConstants.getFollowing);
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '팔로잉 목록 조회 실패');
+    }
+
+    return List<Map<String, dynamic>>.from(response.data['data']);
+  }
+
+  /// 나를 팔로우한 유저 목록
+  Future<List<Map<String, dynamic>>> getFollowers() async {
+    final response = await dio.get(ApiConstants.getFollowers);
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '팔로워 목록 조회 실패');
+    }
+
+    return List<Map<String, dynamic>>.from(response.data['data']);
+  }
+
+  Future<bool> isFollowing(String targetUid) async {
+    final response = await dio.get(
+      ApiConstants.isFollowing,
+      queryParameters: {'targetUid': targetUid},
+    );
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '팔로우 상태 조회 실패');
+    }
+
+    return response.data['data']['isFollowing'] == true;
+  }
+
+  Future<List<Map<String, dynamic>>> getRecentLevelUps() async {
+    final response = await dio.get(ApiConstants.getRecentLevelUps);
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '레벨업 유저 불러오기 실패');
+    }
+
+    return List<Map<String, dynamic>>.from(response.data['data']);
+  }
+
+  Future<void> likeQuestion(String questionId) async {
+    final response = await dio.post(
+      ApiConstants.likeQuestion,
+      data: {'questionId': questionId},
+    );
+
+    if (!(response.data['success'] ?? false)) {
+      throw Exception(response.data['message'] ?? '좋아요 실패');
+    }
   }
 }

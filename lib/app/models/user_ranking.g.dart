@@ -12,7 +12,11 @@ _UserRanking _$UserRankingFromJson(Map<String, dynamic> json) => _UserRanking(
   avatarUrl: _toString(json['avatarUrl']),
   point: _toInt(json['point']),
   level: _toInt(json['level']),
-  rank: _toInt(json['rank']),
+  title: _toString(json['title']),
+  questionCount: _toInt(json['questionCount']),
+  correctRate: _toInt(json['correctRate']),
+  playCount: _toInt(json['playCount']),
+  levelUpAt: _toDateTime(json['levelUpAt']),
 );
 
 Map<String, dynamic> _$UserRankingToJson(_UserRanking instance) =>
@@ -22,5 +26,9 @@ Map<String, dynamic> _$UserRankingToJson(_UserRanking instance) =>
       'avatarUrl': instance.avatarUrl,
       'point': instance.point,
       'level': instance.level,
-      'rank': instance.rank,
+      'title': instance.title,
+      'questionCount': instance.questionCount,
+      'correctRate': instance.correctRate,
+      'playCount': instance.playCount,
+      'levelUpAt': instance.levelUpAt.toIso8601String(),
     };

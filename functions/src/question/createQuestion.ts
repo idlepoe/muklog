@@ -1,6 +1,7 @@
 import {onRequest} from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
-import {verifyAuth} from "../utils/auth"; // 토큰 인증 유틸
+import {verifyAuth} from "../utils/auth";
+import {getLevelFromPoint, getTitleFromLevel} from "../utils/getLevelFromPoint"; // 토큰 인증 유틸
 
 export const createQuestion = onRequest({cors: true}, async (req, res: any) => {
     if (req.method !== "POST") {
@@ -49,10 +50,27 @@ export const createQuestion = onRequest({cors: true}, async (req, res: any) => {
         const userRef = admin.firestore().collection('users').doc(uid);
         const pointToAdd = 50; // 출제 포인트
 
-        await userRef.update({
+        const userSnap = await userRef.get();
+        const user = userSnap.data();
+        const currentPoint = user?.point ?? 0;
+        const newPoint = currentPoint + pointToAdd;
+        const newLevel = getLevelFromPoint(newPoint);
+        const currentLevel = user?.level ?? 1;
+        const newTitle = getTitleFromLevel(newLevel);
+
+        const updateData: any = {
             point: admin.firestore.FieldValue.increment(pointToAdd),
+            level: newLevel,
+            title: newTitle,
+            questionCount: admin.firestore.FieldValue.increment(1),
             updatedAt: now,
-        });
+        };
+
+        if (newLevel > currentLevel) {
+            updateData.levelUpAt = now;
+        }
+
+        await userRef.update(updateData);
 
         return res.status(200).json({
             success: true,
@@ -60,6 +78,7 @@ export const createQuestion = onRequest({cors: true}, async (req, res: any) => {
             data: {
                 questionId: docRef.id,
                 pointGained: pointToAdd,
+                levelUp: newLevel > currentLevel,
             },
         });
     } catch (e) {

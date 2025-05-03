@@ -20,10 +20,7 @@ Widget AppNetworkImage({
             child: Container(
               height: 30,
               width: 30,
-              child: CircularProgressIndicator(
-                strokeCap: StrokeCap.round,
-                color: Colors.white,
-              ),
+              child: CircularProgressIndicator(),
             ),
           ),
       errorWidget: (context, url, error) => Icon(Icons.error),

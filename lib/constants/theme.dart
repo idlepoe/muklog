@@ -14,9 +14,11 @@ class AppTheme {
           fontWeight: FontWeight.bold,
           fontFamily: 'BMYEONSUNG',
         ),
-        iconTheme: IconThemeData(
-          color: Colors.black87,
-        ),
+        iconTheme: IconThemeData(color: Colors.black87),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: Colors.orangeAccent, // 원하는 색상
+        strokeCap: StrokeCap.round,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(

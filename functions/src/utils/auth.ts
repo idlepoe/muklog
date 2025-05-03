@@ -17,3 +17,14 @@ export async function verifyAuth(req:any): Promise<admin.auth.DecodedIdToken> {
     throw new functions.https.HttpsError('unauthenticated', 'Invalid Firebase ID token');
   }
 }
+
+export async function getUserSummary(uid: string) {
+  const userDoc = await admin.firestore().collection('users').doc(uid).get();
+  const data = userDoc.data();
+  if (!data) return null;
+  return {
+    uid,
+    nickname: data.nickname ?? '',
+    avatarUrl: data.avatarUrl ?? '',
+  };
+}
