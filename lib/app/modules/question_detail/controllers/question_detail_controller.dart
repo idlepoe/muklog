@@ -5,6 +5,7 @@ import '../../../../common/utils/logger.dart';
 import '../../../../common/widgets/point_gain_dialog.dart';
 import '../../../models/generated_question.dart';
 import '../../../models/question.dart';
+import '../../../routes/app_pages.dart';
 import '../../profile/controllers/profile_controller.dart';
 
 class QuestionDetailController extends GetxController {
@@ -19,7 +20,14 @@ class QuestionDetailController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    question = Get.arguments as Question;
+    final arg = Get.arguments;
+    if (arg == null || arg is! Question) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAllNamed(Routes.HOME);
+      });
+      return;
+    }
+    question = arg;
     checkAlreadySolved();
   }
 
@@ -126,8 +134,9 @@ class QuestionDetailController extends GetxController {
   Future<void> likeQuestion() async {
     try {
       await ApiService().likeQuestion(question.questionId);
-      question = question.copyWith(likeCount: question.likeCount + 1);
+      Get.back();
     } catch (e) {
+      logger.e(e);
       Get.snackbar('오류', '좋아요를 누를 수 없습니다.');
     }
   }

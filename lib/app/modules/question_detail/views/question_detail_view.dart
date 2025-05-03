@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 
@@ -123,21 +125,43 @@ class QuestionDetailView extends GetView<QuestionDetailController> {
                             '해설: ${q.explanation}',
                             style: const TextStyle(fontSize: 14),
                           ),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: controller.likeQuestion,
-                              borderRadius: BorderRadius.circular(8),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.thumb_up_alt_outlined),
-                                    SizedBox(width: 8),
-                                    Text('${controller.question.likeCount}명이 좋아했어요'),
-                                  ],
+                          const SizedBox(height: 16),
+                          OutlinedButton(
+                            onPressed: controller.likeQuestion,
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: Colors.grey.shade400),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 20,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.thumb_up_alt_outlined),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '${controller.question.likeCount}명이 좋아했어요',
                                 ),
+                              ],
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () => Get.back(),
+                            icon: const Icon(Icons.exit_to_app),
+                            label: const Text('나가기'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 14,
+                              ),
+                              backgroundColor: Colors.grey[200],
+                              foregroundColor: Colors.black87,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
                               ),
                             ),
                           ),
