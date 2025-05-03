@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget BottomButton({required String text, required VoidCallback onPressed}) {
+Widget AppButton({required String text, required VoidCallback onPressed}) {
   return SafeArea(
     child: Align(
       alignment: Alignment.bottomCenter,

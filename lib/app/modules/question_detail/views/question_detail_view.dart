@@ -5,7 +5,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 
-import '../../../../common/widgets/bottom_button.dart';
+import '../../../../common/widgets/app_button.dart';
+import '../../../../common/widgets/app_exit_button.dart';
+import '../../../../common/widgets/app_outlined_button.dart';
 import '../controllers/question_detail_controller.dart';
 
 class QuestionDetailView extends GetView<QuestionDetailController> {
@@ -106,7 +108,7 @@ class QuestionDetailView extends GetView<QuestionDetailController> {
                         ),
                         const SizedBox(height: 24),
                         if (!controller.isAnswered.value)
-                          BottomButton(
+                          AppButton(
                             text: "정답 확인",
                             onPressed: controller.submitAnswer,
                           )
@@ -126,19 +128,8 @@ class QuestionDetailView extends GetView<QuestionDetailController> {
                             style: const TextStyle(fontSize: 14),
                           ),
                           const SizedBox(height: 16),
-                          OutlinedButton(
-                            onPressed: controller.likeQuestion,
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.grey.shade400),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                                horizontal: 20,
-                              ),
-                            ),
-                            child: Row(
+                          AppOutlinedButton(
+                            widget: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Icon(Icons.thumb_up_alt_outlined),
@@ -148,22 +139,14 @@ class QuestionDetailView extends GetView<QuestionDetailController> {
                                 ),
                               ],
                             ),
+                            onPressed: controller.likeQuestion,
                           ),
-                          ElevatedButton.icon(
-                            onPressed: () => Get.back(),
-                            icon: const Icon(Icons.exit_to_app),
-                            label: const Text('나가기'),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 32,
-                                vertical: 14,
-                              ),
-                              backgroundColor: Colors.grey[200],
-                              foregroundColor: Colors.black87,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
+                          const SizedBox(height: 16),
+                          AppExitButton(
+                            text: "나가기",
+                            onPressed: () {
+                              Get.back();
+                            },
                           ),
                         ],
                       ],

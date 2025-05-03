@@ -49,8 +49,6 @@ class QuestionDetailController extends GetxController {
   Future<void> submitAnswer() async {
     if (selected.value == null || isAnswered.value) return;
 
-    isAnswered.value = true;
-
     try {
       final result = await ApiService().submitAnswer(
         questionId: question.questionId!,
@@ -69,6 +67,9 @@ class QuestionDetailController extends GetxController {
 
       isCorrectAnswer.value = isCorrect;
       pointEarned.value = point;
+
+      // 통신 후 정답 표시
+      isAnswered.value = true;
 
       // 1. 포인트 획득 다이얼로그 먼저
       if (point > 0) {

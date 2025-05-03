@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../common/widgets/bottom_button.dart';
+import '../../../../common/widgets/app_button.dart';
 import '../../../../common/widgets/x_file_preview.dart';
 import '../../../models/generated_question.dart';
 import '../controllers/submit_question_controller.dart';
@@ -67,7 +67,7 @@ class SubmitQuestionView extends GetView<SubmitQuestionController> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        BottomButton(
+                        AppButton(
                           text: "AI 문제 생성",
                           onPressed: controller.generateQuestion,
                         ),
@@ -127,7 +127,7 @@ class SubmitQuestionView extends GetView<SubmitQuestionController> {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
-        BottomButton(text: "문제 출제하기", onPressed: controller.submitQuestion),
+        AppButton(text: "문제 출제하기", onPressed: controller.submitQuestion),
       ],
     );
   }
