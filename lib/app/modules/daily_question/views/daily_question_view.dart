@@ -19,7 +19,7 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: controller.fetchData,
-          )
+          ),
         ],
       ),
       body: Obx(() {
@@ -45,7 +45,10 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
                   children: [
                     const Text(
                       '😶 아직 퀴즈가 없어요!',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
@@ -57,12 +60,14 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
                     ElevatedButton.icon(
                       onPressed: () async {
                         await Get.toNamed(Routes.SUBMIT_QUESTION);
-
                       },
                       icon: const Icon(Icons.add),
                       label: const Text('퀴즈 출제하러 가기'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ],
@@ -70,7 +75,10 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
               ),
             ],
             const SizedBox(height: 32),
-            const Text('🆙 최근 레벨업한 유저', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              '🆙 최근 레벨업한 유저',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             if (controller.users.isEmpty) ...[
               const SizedBox(height: 12),
@@ -82,11 +90,17 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
                 ),
               ),
             ],
-            ...controller.users.map((user) => ListTile(
-              leading: CircleAvatar(backgroundImage: NetworkImage(user.avatarUrl)),
-              title: Text(user.nickname),
-              subtitle: Text('Lv. ${user.level}'),
-            ))
+            ...controller.users.map(
+              (user) => ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: user.avatarUrl.isNotEmpty
+                      ? NetworkImage(user.avatarUrl)
+                      : AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                ),
+                title: Text(user.nickname),
+                subtitle: Text('Lv. ${user.level}'),
+              ),
+            ),
           ],
         );
       }),
@@ -101,7 +115,8 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
         title: Text(title),
         subtitle: Text(question.question),
         trailing: ElevatedButton(
-          onPressed: () => Get.toNamed(Routes.QUESTION_DETAIL, arguments: question),
+          onPressed:
+              () => Get.toNamed(Routes.QUESTION_DETAIL, arguments: question),
           child: const Text('풀기'),
         ),
       ),

@@ -3,11 +3,13 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/logger.dart';
+
 Widget AppExitButton({required String text, required VoidCallback onPressed}) {
   return Container(
     width: double.infinity,
     child: ElevatedButton.icon(
-      onPressed: () => onPressed,
+      onPressed: onPressed,
       icon: const Icon(Icons.exit_to_app),
       label:  Text(text),
       style: ElevatedButton.styleFrom(

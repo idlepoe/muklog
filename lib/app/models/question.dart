@@ -38,6 +38,10 @@ abstract class Question with _$Question {
     @JsonKey(fromJson: _toInt) required int playCount,
     @JsonKey(fromJson: _toDateTime) required DateTime createdAt,
     @JsonKey(fromJson: _toDateTime) required DateTime updatedAt,
+
+    // 🔽 추가
+    @JsonKey(fromJson: _toString) required String creatorNickname,
+    @JsonKey(fromJson: _toString) required String creatorAvatarUrl,
   }) = _Question;
 
   factory Question.fromJson(Map<String, dynamic> json) =>

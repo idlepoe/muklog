@@ -21,6 +21,8 @@ _Question _$QuestionFromJson(Map<String, dynamic> json) => _Question(
   playCount: _toInt(json['playCount']),
   createdAt: _toDateTime(json['createdAt']),
   updatedAt: _toDateTime(json['updatedAt']),
+  creatorNickname: _toString(json['creatorNickname']),
+  creatorAvatarUrl: _toString(json['creatorAvatarUrl']),
 );
 
 Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
@@ -38,4 +40,6 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
   'playCount': instance.playCount,
   'createdAt': instance.createdAt.toIso8601String(),
   'updatedAt': instance.updatedAt.toIso8601String(),
+  'creatorNickname': instance.creatorNickname,
+  'creatorAvatarUrl': instance.creatorAvatarUrl,
 };

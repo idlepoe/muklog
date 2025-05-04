@@ -141,4 +141,13 @@ class QuestionDetailController extends GetxController {
       Get.snackbar('오류', '좋아요를 누를 수 없습니다.');
     }
   }
+
+  Future<void> getBack() async {
+    logger.d("1111111111");
+    try {
+      Get.back();
+    } catch (e) {
+      logger.e(e);
+    }
+  }
 }

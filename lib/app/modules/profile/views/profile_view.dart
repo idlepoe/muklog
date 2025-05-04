@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../common/widgets/app_button.dart';
 import '../../../routes/app_pages.dart';
 import '../../profile_edit/views/profile_edit_view.dart';
@@ -23,7 +26,11 @@ class ProfileView extends GetView<ProfileController> {
             children: [
               CircleAvatar(
                 radius: 48,
-                backgroundImage: NetworkImage(user.avatarUrl),
+                backgroundImage:
+                    user.avatarUrl.isNotEmpty
+                        ? NetworkImage(user.avatarUrl)
+                        : AssetImage('assets/images/default_avatar.png')
+                            as ImageProvider,
               ),
               const SizedBox(height: 12),
               Text(
@@ -59,10 +66,25 @@ class ProfileView extends GetView<ProfileController> {
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               SizedBox(height: 50),
-              AppButton(text: "프로필 수정", onPressed: () async {
-                await Get.toNamed(Routes.PROFILE_EDIT, arguments: user);
-                await controller.loadUserProfile();
-              })
+              AppButton(
+                text: "프로필 수정",
+                onPressed: () async {
+                  await Get.toNamed(Routes.PROFILE_EDIT, arguments: user);
+                  await controller.loadUserProfile();
+                },
+              ),
+              AppButton(
+                text: "로그아웃",
+                onPressed: () async {
+                  // 🔥 GoogleSignIn 연결 해제
+                  await GoogleSignIn().signOut();
+
+                  // ✅ Firebase 인증 해제
+                  await FirebaseAuth.instance.signOut();
+
+                  await Get.offAllNamed(Routes.SPLASH);
+                },
+              ),
             ],
           ),
         );

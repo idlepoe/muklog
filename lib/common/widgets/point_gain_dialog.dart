@@ -19,11 +19,11 @@ class PointGainDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('🎉 출제 성공!'),
+      title: const Text('🎉 성공!'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Lottie.asset('assets/animations/celebrate.json', height: 100),
+          Lottie.asset('assets/animations/celebrate.json', height: 150),
           const SizedBox(height: 16),
           Text(
             '+$points 포인트 획득!',
