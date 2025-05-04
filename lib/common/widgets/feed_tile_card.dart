@@ -6,6 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../app/models/feed.dart';
 import '../../app/models/feed_content_block.dart';
 import '../../app/routes/app_pages.dart';
+import '../utils/app_utils.dart';
 
 class FeedTileCard extends StatelessWidget {
   final Feed feed;
@@ -90,7 +91,7 @@ class FeedTileCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                timeAgo(feed.createdAt),
+                AppUtils.timeAgo(feed.createdAt),
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ),
@@ -99,16 +100,5 @@ class FeedTileCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String timeAgo(DateTime date) {
-    final now = DateTime.now();
-    final diff = now.difference(date);
-
-    if (diff.inMinutes < 1) return '방금 전';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}분 전';
-    if (diff.inHours < 24) return '${diff.inHours}시간 전';
-    if (diff.inDays < 7) return '${diff.inDays}일 전';
-    return '${date.month}월 ${date.day}일';
   }
 }

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 
+import '../../../../common/utils/logger.dart';
 import '../../../models/feed.dart';
+
 
 class FeedDetailController extends GetxController {
   late final Feed feed;
@@ -18,12 +20,10 @@ class FeedDetailController extends GetxController {
   }
 
   void selectAnswer(String imageUrl, String choice) {
-    if (selectedAnswers.containsKey(imageUrl)) return; // 이미 선택된 경우 무시
+    if (selectedAnswers.containsKey(imageUrl)) return;
     selectedAnswers[imageUrl] = choice;
   }
 
-  bool isCorrect(String imageUrl) {
-    final quiz = feed.quizzes!.firstWhereOrNull((q) => q.imageUrl == imageUrl);
-    return quiz != null && selectedAnswers[imageUrl] == quiz.answer;
-  }
+  bool isAnswered(String imageUrl) => selectedAnswers.containsKey(imageUrl);
+  bool isSelected(String imageUrl, String choice) => selectedAnswers[imageUrl] == choice;
 }
