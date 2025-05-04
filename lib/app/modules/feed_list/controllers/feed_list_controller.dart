@@ -18,8 +18,13 @@ class FeedListController extends GetxController {
 
   Future<void> fetchFeeds({bool loadMore = false}) async {
     if (loadMore && !isMoreAvailable.value) return;
-    if (loadMore) isFetchingMore.value = true;
-    else isLoading.value = true;
+    if (!loadMore) {
+      lastFeedId = "";
+    }
+    if (loadMore)
+      isFetchingMore.value = true;
+    else
+      isLoading.value = true;
 
     try {
       final result = await ApiService().getFeeds(startAfterId: lastFeedId);

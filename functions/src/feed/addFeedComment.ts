@@ -29,6 +29,10 @@ export const addFeedComment = onRequest({ cors: true }, async (req, res: any) =>
                 createdAt,
             });
 
+        await db.collection('feeds').doc(feedId).update({
+            commentCount: admin.firestore.FieldValue.increment(1),
+        });
+
         // 응답으로 새 댓글 정보 제공
         return res.status(200).json({
             success: true,

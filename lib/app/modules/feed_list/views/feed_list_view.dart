@@ -17,7 +17,9 @@ class FeedListView extends GetView<FeedListController> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: controller.fetchFeeds,
+            onPressed: () {
+              controller.fetchFeeds(loadMore: false);
+            },
           ),
         ],
       ),

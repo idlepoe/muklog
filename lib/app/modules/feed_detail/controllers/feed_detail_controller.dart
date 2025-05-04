@@ -26,6 +26,17 @@ class FeedDetailController extends GetxController {
   final RxSet<String> reactedTypes = <String>{}.obs;
   final RxMap<String, bool> animateReactions = <String, bool>{}.obs;
 
+  bool hasFetchedComments = false;
+
+  late ScrollController scrollController;
+
+  void onScrollToCommentArea() {
+    if (!hasFetchedComments) {
+      fetchComments();
+      hasFetchedComments = true;
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -36,6 +47,13 @@ class FeedDetailController extends GetxController {
     countBad.value = feed.countBad;
     countExpensive.value = feed.countExpensive;
     countInteresting.value = feed.countInteresting;
+
+    scrollController = ScrollController()
+      ..addListener(() {
+        if (!hasFetchedComments && scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
+          fetchComments();
+        }
+      });
   }
 
   void toggleQuiz(String imageUrl) {
@@ -117,19 +135,43 @@ class FeedDetailController extends GetxController {
   Future<void> likeComment(String commentId) async {
     try {
       await ApiService().likeFeedComment(feed.feedId, commentId);
-      final idx = comments.indexWhere((c) => c.commentId == commentId);
-      if (idx != -1) comments[idx] = comments[idx].copyWith(likeCount: comments[idx].likeCount + 1);
+      final index = comments.indexWhere((c) => c.commentId == commentId);
+      if (index != -1) {
+        final updated = comments[index].copyWith(
+          likeCount: comments[index].likeCount + 1,
+        );
+        comments[index] = updated;
+      }
     } catch (_) {
-      Get.snackbar('오류', '댓글 좋아요 실패');
+      Get.snackbar('오류', '댓글 좋아요에 실패했습니다.');
     }
   }
 
   Future<void> reportComment(String commentId) async {
     try {
       await ApiService().reportFeedComment(feed.feedId, commentId);
-      Get.snackbar('신고 완료', '신고가 접수되었습니다.');
+      final index = comments.indexWhere((c) => c.commentId == commentId);
+      if (index != -1) {
+        final updated = comments[index].copyWith(
+          reportCount: comments[index].reportCount + 1,
+        );
+        comments[index] = updated;
+      }
+      Get.snackbar('신고 완료', '해당 댓글이 신고되었습니다.');
     } catch (_) {
-      Get.snackbar('오류', '신고 실패');
+      Get.snackbar('오류', '댓글 신고에 실패했습니다.');
     }
   }
+
+  Future<void> fetchComments() async {
+    if (hasFetchedComments) return;
+    try {
+      final result = await ApiService().getFeedComments(feed.feedId);
+      comments.assignAll(result.map((e) => FeedComment.fromJson(e)).toList());
+      hasFetchedComments = true;
+    } catch (_) {
+      Get.snackbar('오류', '댓글을 불러오지 못했습니다.');
+    }
+  }
+
 }

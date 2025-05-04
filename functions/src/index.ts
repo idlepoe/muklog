@@ -43,4 +43,5 @@ export { addFeedComment } from './feed/addFeedComment';
 export { sendFeedReaction } from './feed/sendFeedReaction';
 export { likeFeedComment } from './feed/likeFeedComment';
 export { reportFeedComment } from './feed/reportFeedComment';
+export { getFeedComments } from './feed/getFeedComments';
 

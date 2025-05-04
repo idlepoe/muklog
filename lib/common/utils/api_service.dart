@@ -470,7 +470,6 @@ class ApiService {
     }
   }
 
-  // lib/app/data/services/api_service.dart
   Future<List<Map<String, dynamic>>> getFeeds({String? startAfterId}) async {
     final response = await dio.post(
       ApiConstants.getFeeds,
@@ -564,4 +563,17 @@ class ApiService {
       throw Exception(data['message'] ?? '댓글 신고 실패');
     }
   }
+
+  Future<List<dynamic>> getFeedComments(String feedId) async {
+    final response = await dio.get(ApiConstants.getFeedComments, queryParameters: {
+      'feedId': feedId,
+    });
+    final data = response.data;
+    if (data['success'] == true) {
+      return data['data']; // List of comment JSONs
+    } else {
+      throw Exception(data['message'] ?? '댓글 불러오기 실패');
+    }
+  }
+
 }

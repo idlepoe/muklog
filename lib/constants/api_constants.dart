@@ -40,4 +40,5 @@ class ApiConstants {
   static const String sendFeedReaction = "/sendFeedReaction";
   static const String likeFeedComment = "/likeFeedComment";
   static const String reportFeedComment = "/reportFeedComment";
+  static const String getFeedComments = "/getFeedComments";
 }
