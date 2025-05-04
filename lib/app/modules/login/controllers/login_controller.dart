@@ -32,7 +32,7 @@ class LoginController extends GetxController {
         final GoogleSignIn _googleSignIn = GoogleSignIn(
           scopes: ['email'],
           serverClientId:
-              '68241899379-31ma7fhvmgu4gpirqvk4lgim401lrp6g.apps.googleusercontent.com',
+              '68241899379-uleh0qhmo7p902kpssau1uimd9k5dt7a.apps.googleusercontent.com',
         );
 
         // Mobile 방식
