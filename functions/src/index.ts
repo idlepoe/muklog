@@ -39,3 +39,8 @@ export { getNotifications } from './notification/getNotifications';
 export { getFollowingFeed } from './feed/getFollowingFeed';
 export { getFeeds } from './feed/getFeeds';
 export { createFeed } from './feed/createFeed';
+export { addFeedComment } from './feed/addFeedComment';
+export { sendFeedReaction } from './feed/sendFeedReaction';
+export { likeFeedComment } from './feed/likeFeedComment';
+export { reportFeedComment } from './feed/reportFeedComment';
+

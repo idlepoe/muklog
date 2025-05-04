@@ -33,4 +33,11 @@ class ApiConstants {
 
   // 📰 FEED
   static const String getFollowingFeed = "/getFollowingFeed";
+  static const String getFeeds = "/getFeeds";
+  static const String createFeed = "/createFeed";
+  static const String rewardPoint = "/rewardPoint";
+  static const String addFeedComment = "/addFeedComment";
+  static const String sendFeedReaction = "/sendFeedReaction";
+  static const String likeFeedComment = "/likeFeedComment";
+  static const String reportFeedComment = "/reportFeedComment";
 }

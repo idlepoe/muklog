@@ -473,7 +473,7 @@ class ApiService {
   // lib/app/data/services/api_service.dart
   Future<List<Map<String, dynamic>>> getFeeds({String? startAfterId}) async {
     final response = await dio.post(
-      '/getFeeds',
+      ApiConstants.getFeeds,
       data: {'startAfterId': startAfterId},
     );
 
@@ -490,7 +490,7 @@ class ApiService {
     List<FeedQuiz> quizzes = const [],
   }) async {
     final response = await dio.post(
-      '/createFeed',
+      ApiConstants.createFeed,
       data: {
         'contentBlocks': contentBlocks.map((e) => e.toJson()).toList(),
         'quizzes': quizzes.map((e) => e.toJson()).toList(),
@@ -499,6 +499,69 @@ class ApiService {
 
     if (response.data['success'] != true) {
       throw Exception(response.data['message'] ?? '피드 생성 실패');
+    }
+  }
+
+  // api_service.dart
+  Future<Map<String, dynamic>> rewardPoint(Map<String, dynamic> body) async {
+    final response = await dio.post(ApiConstants.rewardPoint, data: body);
+
+    final data = response.data;
+    if (data['success'] == true) {
+      return data['data'];
+    } else {
+      throw Exception(data['message'] ?? '포인트 적립 실패');
+    }
+  }
+
+  Future<Map<String, dynamic>> addFeedComment(
+    String feedId,
+    String text,
+  ) async {
+    final response = await dio.post(
+      ApiConstants.addFeedComment,
+      data: {'feedId': feedId, 'text': text},
+    );
+    final data = response.data;
+    if (data['success'] == true) {
+      return data['data'];
+    } else {
+      throw Exception(data['message'] ?? '코멘트 작성 실패');
+    }
+  }
+
+  Future<void> sendFeedReaction(String feedId, String type) async {
+    final response = await dio.post(
+      ApiConstants.sendFeedReaction,
+      data: {'feedId': feedId, 'reaction': type},
+    );
+    final data = response.data;
+    if (data['success'] == true) {
+      return data['data'];
+    } else {
+      throw Exception(data['message'] ?? '리액션 실패');
+    }
+  }
+
+  Future<void> likeFeedComment(String feedId, String commentId) async {
+    final response = await dio.post(
+      ApiConstants.likeFeedComment,
+      data: {'feedId': feedId, 'commentId': commentId},
+    );
+    final data = response.data;
+    if (data['success'] != true) {
+      throw Exception(data['message'] ?? '댓글 좋아요 실패');
+    }
+  }
+
+  Future<void> reportFeedComment(String feedId, String commentId) async {
+    final response = await dio.post(
+      ApiConstants.reportFeedComment,
+      data: {'feedId': feedId, 'commentId': commentId},
+    );
+    final data = response.data;
+    if (data['success'] != true) {
+      throw Exception(data['message'] ?? '댓글 신고 실패');
     }
   }
 }
