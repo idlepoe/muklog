@@ -576,4 +576,15 @@ class ApiService {
     }
   }
 
+  Future<List<dynamic>> getRecentFeeds({int limit = 3}) async {
+    final response = await dio.get('/getRecentFeeds', queryParameters: {
+      'limit': limit,
+    });
+    if (response.data['success'] == true) {
+      return response.data['data'];
+    } else {
+      throw Exception(response.data['message'] ?? '최근 피드를 불러오지 못했습니다.');
+    }
+  }
+
 }

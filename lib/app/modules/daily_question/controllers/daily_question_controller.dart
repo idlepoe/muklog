@@ -4,6 +4,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:muklog/common/utils/api_service.dart';
 
+import '../../../models/feed.dart';
 import '../../../models/generated_question.dart';
 import '../../../models/question.dart';
 import '../../../models/user_summary.dart';
@@ -25,6 +26,7 @@ class DailyQuestionController extends GetxController {
   Future<void> fetchData() async {
     fetchQuestions();
     fetchRecentLevelUps();
+    fetchRecentFeeds(); // 🆕 추가
   }
 
   Future<void> fetchQuestions() async {
@@ -54,4 +56,16 @@ class DailyQuestionController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  final RxList<Feed> latestFeeds = <Feed>[].obs;
+
+  Future<void> fetchRecentFeeds() async {
+    try {
+      final result = await ApiService().getRecentFeeds(limit: 3);
+      latestFeeds.assignAll(result.map((e) => Feed.fromJson(e)).toList());
+    } catch (e) {
+      Get.snackbar('오류', '최근 먹로그를 불러오지 못했습니다.');
+    }
+  }
+
 }

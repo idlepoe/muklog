@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../../models/feed_content_block.dart';
 import '../../../models/generated_question.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/daily_question_controller.dart';
@@ -74,7 +75,7 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
                 ),
               ),
             ],
-            const SizedBox(height: 32),
+            const Divider(height: 32),
             const Text(
               '🆙 최근 레벨업한 유저',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -101,6 +102,30 @@ class DailyQuestionView extends GetView<DailyQuestionController> {
                 subtitle: Text('Lv. ${user.level}'),
               ),
             ),
+            if (controller.latestFeeds.isNotEmpty) ...[
+              const Divider(height: 32),
+              const Text('🍱 오늘의 먹로그', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const SizedBox(height: 12),
+              ...controller.latestFeeds.map((feed) {
+                final imageBlock = feed.contentBlocks.whereType<FeedContentImage>().firstOrNull;
+                final textBlock = feed.contentBlocks.whereType<FeedContentText>().firstOrNull;
+
+                return ListTile(
+                  leading: imageBlock != null
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(imageBlock.value, width: 60, height: 60, fit: BoxFit.cover),
+                  )
+                      : null,
+                  title: Text('${feed.nickname} 님의 먹로그'),
+                  subtitle: textBlock != null
+                      ? Text(textBlock.value, maxLines: 2, overflow: TextOverflow.ellipsis)
+                      : const Text('내용이 없습니다.'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Get.toNamed(Routes.FEED_DETAIL, arguments: feed),
+                );
+              }).toList(),
+            ]
           ],
         );
       }),
