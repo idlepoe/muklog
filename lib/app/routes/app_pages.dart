@@ -2,8 +2,14 @@ import 'package:get/get.dart';
 
 import '../modules/daily_question/bindings/daily_question_binding.dart';
 import '../modules/daily_question/views/daily_question_view.dart';
+import '../modules/feed_detail/bindings/feed_detail_binding.dart';
+import '../modules/feed_detail/views/feed_detail_view.dart';
 import '../modules/feed_following/bindings/feed_following_binding.dart';
 import '../modules/feed_following/views/feed_following_view.dart';
+import '../modules/feed_list/bindings/feed_list_binding.dart';
+import '../modules/feed_list/views/feed_list_view.dart';
+import '../modules/feed_upload/bindings/feed_upload_binding.dart';
+import '../modules/feed_upload/views/feed_upload_view.dart';
 import '../modules/followers/bindings/followers_binding.dart';
 import '../modules/followers/views/followers_view.dart';
 import '../modules/following/bindings/following_binding.dart';
@@ -162,6 +168,21 @@ class AppPages {
       name: _Paths.POINT_HISTORY,
       page: () => const PointHistoryView(),
       binding: PointHistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.FEED_LIST,
+      page: () => const FeedListView(),
+      binding: FeedListBinding(),
+    ),
+    GetPage(
+      name: _Paths.FEED_DETAIL,
+      page: () => const FeedDetailView(),
+      binding: FeedDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.FEED_UPLOAD,
+      page: () => const FeedUploadView(),
+      binding: FeedUploadBinding(),
     ),
   ];
 }

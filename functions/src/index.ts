@@ -37,3 +37,5 @@ export { getNotifications } from './notification/getNotifications';
 
 /** FEED */
 export { getFollowingFeed } from './feed/getFollowingFeed';
+export { getFeeds } from './feed/getFeeds';
+export { createFeed } from './feed/createFeed';

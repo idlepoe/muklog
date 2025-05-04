@@ -20,14 +20,12 @@ class HomeView extends GetView<HomeController> {
           selectedItemColor: Colors.black,
           unselectedItemColor: Colors.grey,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: '홈',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
             BottomNavigationBarItem(
               icon: Icon(Icons.add_photo_alternate_outlined),
               label: '출제',
             ),
+            BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: '먹로그'),
             BottomNavigationBarItem(
               icon: Icon(Icons.emoji_events_outlined),
               label: '랭킹',

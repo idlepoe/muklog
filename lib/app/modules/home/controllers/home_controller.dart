@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:muklog/app/modules/feed_list/controllers/feed_list_controller.dart';
+import 'package:muklog/app/modules/feed_list/views/feed_list_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
@@ -23,6 +25,7 @@ class HomeController extends GetxController {
   final pages = [
     const DailyQuestionView(), // 🏠 홈: 오늘의 문제
     const SubmitQuestionView(), // 📸 출제
+    const FeedListView(), // 📸 출제
     const RankingView(), // 🏅 랭킹
     const ProfileView(), // 👤 프로필
   ];
@@ -32,6 +35,7 @@ class HomeController extends GetxController {
     super.onInit();
     Get.put(DailyQuestionController());
     Get.put(SubmitQuestionController());
+    Get.put(FeedListController());
     Get.put(RankingController());
     Get.put(ProfileController());
   }
@@ -56,8 +60,10 @@ class HomeController extends GetxController {
     } else if (index == 1) {
       Get.put(SubmitQuestionController());
     } else if (index == 2) {
-      Get.put(RankingController());
+      Get.put(FeedListController());
     } else if (index == 3) {
+      Get.put(RankingController());
+    } else if (index == 4) {
       Get.put(ProfileController());
     }
   }

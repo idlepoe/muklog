@@ -25,6 +25,9 @@ abstract class Routes {
   static const NOTIFICATION = _Paths.NOTIFICATION;
   static const SETTINGS = _Paths.SETTINGS;
   static const POINT_HISTORY = _Paths.POINT_HISTORY;
+  static const FEED_LIST = _Paths.FEED_LIST;
+  static const FEED_DETAIL = _Paths.FEED_DETAIL;
+  static const FEED_UPLOAD = _Paths.FEED_UPLOAD;
 }
 
 abstract class _Paths {
@@ -51,4 +54,7 @@ abstract class _Paths {
   static const NOTIFICATION = '/notification';
   static const SETTINGS = '/settings';
   static const POINT_HISTORY = '/point-history';
+  static const FEED_LIST = '/feed-list';
+  static const FEED_DETAIL = '/feed-detail';
+  static const FEED_UPLOAD = '/feed-upload';
 }

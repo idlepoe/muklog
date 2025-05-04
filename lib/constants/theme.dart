@@ -44,6 +44,13 @@ class AppTheme {
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
       ),
+      cardColor: const Color(0xFFFFF7E6),
+      cardTheme: CardTheme(color: Color(0xFFFFF7E6)),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: const Color(0xFFFFCC66),
+        foregroundColor: Colors.brown.shade800,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
     );
   }
 }

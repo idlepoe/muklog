@@ -7,14 +7,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:muklog/app/models/feed_content_block.dart';
 import 'package:muklog/app/models/generated_question.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../app/models/answer_result.dart';
 import '../../app/models/api_response.dart';
 import '../../app/models/app_notification.dart';
+import '../../app/models/feed_quiz.dart';
 import '../../app/models/point_history.dart';
 import '../../app/models/question.dart';
 import '../../app/models/user_profile.dart';
@@ -212,17 +215,11 @@ class ApiService {
     final data = response.data['data'] as Map<String, dynamic>;
     return {
       'random':
-          data['random'] == null
-              ? null
-              : Question.fromJson(data['random']),
+          data['random'] == null ? null : Question.fromJson(data['random']),
       'friend':
-          data['friend'] == null
-              ? null
-              : Question.fromJson(data['friend']),
+          data['friend'] == null ? null : Question.fromJson(data['friend']),
       'popular':
-          data['popular'] == null
-              ? null
-              : Question.fromJson(data['popular']),
+          data['popular'] == null ? null : Question.fromJson(data['popular']),
     };
   }
 
@@ -314,18 +311,22 @@ class ApiService {
     final data = response.data['data'] as Map<String, dynamic>;
 
     return {
-      'pointRanking': (data['pointRanking'] as List)
-          .map((e) => UserRanking.fromJson(e))
-          .toList(),
-      'levelUpRanking': (data['levelUpRanking'] as List)
-          .map((e) => UserRanking.fromJson(e))
-          .toList(),
-      'questionRanking': (data['questionRanking'] as List)
-          .map((e) => UserRanking.fromJson(e))
-          .toList(),
-      'accuracyRanking': (data['accuracyRanking'] as List)
-          .map((e) => UserRanking.fromJson(e))
-          .toList(),
+      'pointRanking':
+          (data['pointRanking'] as List)
+              .map((e) => UserRanking.fromJson(e))
+              .toList(),
+      'levelUpRanking':
+          (data['levelUpRanking'] as List)
+              .map((e) => UserRanking.fromJson(e))
+              .toList(),
+      'questionRanking':
+          (data['questionRanking'] as List)
+              .map((e) => UserRanking.fromJson(e))
+              .toList(),
+      'accuracyRanking':
+          (data['accuracyRanking'] as List)
+              .map((e) => UserRanking.fromJson(e))
+              .toList(),
       'myPointRank': data['myPointRank'], // e.g., { rank: 12, point: 1850 }
     };
   }
@@ -345,7 +346,6 @@ class ApiService {
     required String imageUrl,
     required String userPrice,
   }) async {
-
     final buffer = StringBuffer();
 
     buffer.writeln('이 음식의 이름과 사용자가 입력한 가격을 바탕으로, 사용자 참여형 객관식 퀴즈를 만들어줘.');
@@ -363,7 +363,9 @@ class ApiService {
     buffer.writeln('  "question": "이 음식의 가격은 얼마일까요?",');
     buffer.writeln('  "choices": ["2500원", "3200원", "3000원", "4000원"],');
     buffer.writeln('  "answer": "3200원",');
-    buffer.writeln('  "explanation": "이 음식의 평균 가격은 약 2,800원이지만, 사용자가 구매한 가격은 3,200원입니다. 포장 상태가 좋거나 유명 맛집에서 구매했을 가능성이 있습니다.",');
+    buffer.writeln(
+      '  "explanation": "이 음식의 평균 가격은 약 2,800원이지만, 사용자가 구매한 가격은 3,200원입니다. 포장 상태가 좋거나 유명 맛집에서 구매했을 가능성이 있습니다.",',
+    );
     buffer.writeln('  "foodName": "김밥"');
     buffer.writeln('}');
     buffer.writeln('```');
@@ -371,9 +373,7 @@ class ApiService {
     final promptAppend = buffer.toString();
 
     final prompt = [
-      Content.multi([
-        TextPart(promptAppend),
-      ]),
+      Content.multi([TextPart(promptAppend)]),
       Content("user", [FileData("image/jpeg", imageUrl)]),
     ];
 
@@ -467,6 +467,38 @@ class ApiService {
 
     if (!(response.data['success'] ?? false)) {
       throw Exception(response.data['message'] ?? '좋아요 실패');
+    }
+  }
+
+  // lib/app/data/services/api_service.dart
+  Future<List<Map<String, dynamic>>> getFeeds({String? startAfterId}) async {
+    final response = await dio.post(
+      '/getFeeds',
+      data: {'startAfterId': startAfterId},
+    );
+
+    if (response.data['success'] == true) {
+      final List list = response.data['data'];
+      return List<Map<String, dynamic>>.from(list);
+    } else {
+      throw Exception(response.data['message'] ?? '피드 불러오기 실패');
+    }
+  }
+
+  Future<void> createFeed({
+    required List<FeedContentBlock> contentBlocks,
+    List<FeedQuiz> quizzes = const [],
+  }) async {
+    final response = await dio.post(
+      '/createFeed',
+      data: {
+        'contentBlocks': contentBlocks.map((e) => e.toJson()).toList(),
+        'quizzes': quizzes.map((e) => e.toJson()).toList(),
+      },
+    );
+
+    if (response.data['success'] != true) {
+      throw Exception(response.data['message'] ?? '피드 생성 실패');
     }
   }
 }
