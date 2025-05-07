@@ -40,6 +40,19 @@ class LoginView extends GetView<LoginController> {
                     label: const Text('Google로 시작하기'),
                   ),
                 ),
+                const SizedBox(height: 64),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () => controller.signInAsGuest(),
+                    icon: const Icon(Icons.person_outline),
+                    label: const Text('게스트로 시작하기'),
+                  ),
+                ),
               ],
             ),
           ),

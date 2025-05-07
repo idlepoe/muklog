@@ -58,6 +58,21 @@ class LoginController extends GetxController {
     }
   }
 
+  /// 🔹 게스트 로그인
+  Future<void> signInAsGuest() async {
+    try {
+      final userCredential = await FirebaseAuth.instance.signInAnonymously();
+      final user = userCredential.user;
+      logger.i("✅ 게스트 로그인: ${user?.uid}");
+
+      // 향후 닉네임 설정 등의 분기 필요 시 구분 가능
+      Get.offAllNamed(Routes.SPLASH);
+    } catch (e) {
+      logger.e("게스트 로그인 실패: $e");
+      Get.snackbar('게스트 로그인 오류', e.toString());
+    }
+  }
+
   void startLoginChecker() {
     _loginCheckTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final user = FirebaseAuth.instance.currentUser;

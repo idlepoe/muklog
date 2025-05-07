@@ -73,6 +73,14 @@ class ProfileView extends GetView<ProfileController> {
                   await controller.loadUserProfile();
                 },
               ),
+              SizedBox(height: 50),
+
+              if (FirebaseAuth.instance.currentUser?.isAnonymous == true)
+                AppButton(
+                  text: "Google 계정으로 전환",
+                  onPressed: () => controller.upgradeGuestToGoogle(),
+                ),
+
               AppButton(
                 text: "로그아웃",
                 onPressed: () async {
